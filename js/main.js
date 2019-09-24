@@ -12,11 +12,10 @@ var PIN_HEIGHT = 70;
 
 var dialogWindow = document.querySelector('.map');
 dialogWindow.classList.remove('map--faded');
-var dialogWidth = document.querySelector('.map').offsetWidth;
 
-var similarPins = dialogWindow.querySelector('.map__pins');
+var pinsContainer = dialogWindow.querySelector('.map__pins');
 
-var similarPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
 var getRandomFromRange = function (min, max) {
   min = Math.ceil(min);
@@ -34,7 +33,7 @@ var getAuthor = function (number) {
   };
 };
 
-var getRandomBlock = function (values) {
+var getRandomArray = function (values) {
   var result = [];
   for (var i = 0; i < values.length; i++) {
     if (getRandomFromRange(0, 1)) {
@@ -46,7 +45,7 @@ var getRandomBlock = function (values) {
 
 var getRandomLocation = function () {
   return {
-    x: getRandomFromRange(0, dialogWidth),
+    x: getRandomFromRange(0, dialogWindow.offsetWidth),
     y: getRandomFromRange(130, 630)
   };
 };
@@ -61,9 +60,9 @@ var getRandomOffer = function (location) {
     guests: getRandomArrayItem(GUESTS),
     checkin: getRandomArrayItem(CHECK_TIMES),
     checkout: getRandomArrayItem(CHECK_TIMES),
-    features: getRandomBlock(FEATURES),
+    features: getRandomArray(FEATURES),
     description: getRandomArrayItem(DESCRIPTIONS),
-    photos: getRandomBlock(PHOTOS)
+    photos: getRandomArray(PHOTOS)
   };
 };
 
@@ -87,7 +86,7 @@ var getMockProperties = function (quantity) {
 var mockProperties = getMockProperties(QUANTITY);
 
 var renderPin = function (pin) {
-  var pinElement = similarPinTemplate.cloneNode(true);
+  var pinElement = pinTemplate.cloneNode(true);
   pinElement.style = 'left: ' + (pin.location.x - PIN_WIDTH / 2) + 'px; top: ' + (pin.location.y - PIN_HEIGHT) + 'px';
   pinElement.querySelector('img').src = pin.author.avatar;
   pinElement.querySelector('img').alt = pin.offer.title;
@@ -102,4 +101,4 @@ var renderPins = function (pins) {
   }
   return fragment;
 };
-similarPins.appendChild(renderPins(mockProperties));
+pinsContainer.appendChild(renderPins(mockProperties));
