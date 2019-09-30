@@ -68,41 +68,34 @@ var inputPriceMaxLimitHandler = function () {
   }
 };
 
+var getNumberDigit = function (number) {
+  var string = '' + number;
+  var result = '';
+  for (var i = string.length - 1; i >= 0; i--) {
+    if ((string.length - i) % 3 === 1 && string.length - i > 1) {
+      result = ' ' + result;
+    }
+    result = string[i] + result;
+  }
+  return result;
+};
+
+var minPrices = {
+  bungalo: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
+};
+
 var inputPriceEditHandler = function () {
-  if (adType.value === 'flat' && adPrice.validity.rangeUnderflow) {
-    adPrice.setCustomValidity('Цена за данное предложение не может быть ниже 1 000 рублей за ночь');
-  } else if (adType.value === 'house' && adPrice.validity.rangeUnderflow) {
-    adPrice.setCustomValidity('Цена за данное предложение не может быть ниже 5 000 рублей за ночь');
-  } else if (adType.value === 'palace' && adPrice.validity.rangeUnderflow) {
-    adPrice.setCustomValidity('Цена за данное предложение не может быть ниже 10 000 рублей за ночь');
-  } else {
-    adPrice.setCustomValidity('');
+  if (adPrice.validity.rangeUnderflow) {
+    adPrice.setCustomValidity('Цена за данное предложение не может быть ниже ' + getNumberDigit(minPrices[adType.value]) + ' рублей за ночь');
   }
 };
 
 var inputTypeSelectHandler = function () {
-  switch (adType.value) {
-    case 'bungalo':
-      adPrice.value = 0;
-      adPrice.min = 0;
-      adPrice.placeholder = '0';
-      break;
-    case 'flat':
-      adPrice.value = 1000;
-      adPrice.min = 1000;
-      adPrice.placeholder = '1 000';
-      break;
-    case 'house':
-      adPrice.value = 5000;
-      adPrice.min = 5000;
-      adPrice.placeholder = '5 000';
-      break;
-    case 'palace':
-      adPrice.value = 10000;
-      adPrice.min = 10000;
-      adPrice.placeholder = '10 000';
-      break;
-  }
+  adPrice.min = minPrices[adType.value];
+  adPrice.placeholder = '' + getNumberDigit(minPrices[adType.value]);
 };
 
 var inputTimeInSelectHandler = function () {
@@ -133,16 +126,15 @@ var inputTimeOutSelectHandler = function () {
   }
 };
 
-var inputRoomNumberCheckHandler = function () {
+var limitGuestsNumbers = function () {
   var oneGuest = adCapacity.querySelector('[value="1"]');
   var twoGuests = adCapacity.querySelector('[value="2"]');
   var threeGuests = adCapacity.querySelector('[value="3"]');
   var notForGuests = adCapacity.querySelector('[value="0"]');
 
-  adCapacity.value = 1;
-
   switch (adRoomNumber.value) {
     case '1':
+      oneGuest.selected = true;
       oneGuest.disabled = false;
       twoGuests.disabled = true;
       threeGuests.disabled = true;
@@ -182,8 +174,8 @@ var activatePage = function () {
   adPrice.addEventListener('input', inputPriceEditHandler);
   adTimeIn.addEventListener('input', inputTimeInSelectHandler);
   adTimeOut.addEventListener('input', inputTimeOutSelectHandler);
-  adRoomNumber.addEventListener('input', inputRoomNumberCheckHandler);
-
+  limitGuestsNumbers();
+  adRoomNumber.addEventListener('input', limitGuestsNumbers);
 };
 
 var deactivatePage = function () {
@@ -195,8 +187,7 @@ var deactivatePage = function () {
   adPrice.removeEventListener('input', inputPriceEditHandler);
   adTimeIn.removeEventListener('input', inputTimeInSelectHandler);
   adTimeOut.removeEventListener('input', inputTimeOutSelectHandler);
-  adRoomNumber.removeEventListener('input', inputRoomNumberCheckHandler);
-
+  adRoomNumber.removeEventListener('input', limitGuestsNumbers);
 };
 
 var getCoordinates = function () {
