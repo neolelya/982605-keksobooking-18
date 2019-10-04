@@ -23,6 +23,7 @@ var adTimeIn = adForm.querySelector('#timein');
 var adTimeOut = adForm.querySelector('#timeout');
 var adRoomNumber = adForm.querySelector('#room_number');
 var adCapacity = adForm.querySelector('#capacity');
+var resetButton = adForm.querySelector('.ad-form__reset');
 
 var buttonKeydownHandler = function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
@@ -37,16 +38,6 @@ var setFormFieldsDisabled = function (value) {
     formFields[i].disabled = value;
   }
 };
-
-adTitle.required = true;
-adTitle.minLength = 30;
-adTitle.maxLength = 100;
-adPrice.required = true;
-adPrice.min = 0;
-adType.querySelector('[value="flat"]').selected = false;
-adType.querySelector('[value="house"]').selected = true;
-adCapacity.querySelector('[value="3"]').selected = false;
-adCapacity.querySelector('[value="1"]').selected = true;
 
 var inputTitleEditHandler = function () {
   if (adTitle.validity.tooShort) {
@@ -80,22 +71,22 @@ var getNumberDigit = function (number) {
   return result;
 };
 
-var minPrices = {
-  bungalo: 0,
-  flat: 1000,
-  house: 5000,
-  palace: 10000
+var MinPrices = {
+  BUNGALO: 0,
+  FLAT: 1000,
+  HOUSE: 5000,
+  PALACE: 10000
 };
 
 var inputPriceEditHandler = function () {
   if (adPrice.validity.rangeUnderflow) {
-    adPrice.setCustomValidity('Цена за данное предложение не может быть ниже ' + getNumberDigit(minPrices[adType.value]) + ' рублей за ночь');
+    adPrice.setCustomValidity('Цена за данное предложение не может быть ниже ' + (MinPrices[adType.value.toUpperCase()]) + ' рублей за ночь');
   }
 };
 
 var inputTypeSelectHandler = function () {
-  adPrice.min = minPrices[adType.value];
-  adPrice.placeholder = '' + getNumberDigit(minPrices[adType.value]);
+  adPrice.min = MinPrices[adType.value.toUpperCase()];
+  adPrice.placeholder = getNumberDigit(MinPrices[adType.value.toUpperCase()]);
 };
 
 var inputTimeInSelectHandler = function () {
@@ -132,36 +123,28 @@ var limitGuestsNumbers = function () {
   var threeGuests = adCapacity.querySelector('[value="3"]');
   var notForGuests = adCapacity.querySelector('[value="0"]');
 
-  switch (adRoomNumber.value) {
-    case '1':
-      oneGuest.selected = true;
-      oneGuest.disabled = false;
-      twoGuests.disabled = true;
-      threeGuests.disabled = true;
-      notForGuests.disabled = true;
-      break;
-    case '2':
-      twoGuests.selected = true;
-      oneGuest.disabled = false;
-      twoGuests.disabled = false;
-      threeGuests.disabled = true;
-      notForGuests.disabled = true;
-      break;
-    case '3':
-      threeGuests.selected = true;
-      oneGuest.disabled = false;
-      twoGuests.disabled = false;
-      threeGuests.disabled = false;
-      notForGuests.disabled = true;
-      break;
-    case '100':
-      notForGuests.selected = true;
-      oneGuest.disabled = true;
-      twoGuests.disabled = true;
-      threeGuests.disabled = true;
-      notForGuests.disabled = false;
-      break;
+  var guests = [oneGuest, twoGuests, threeGuests, notForGuests];
+
+  var RoomsGuestsAdditions = {
+    1: [oneGuest],
+    2: [oneGuest, twoGuests],
+    3: [oneGuest, twoGuests, threeGuests],
+    100: [notForGuests]
+  };
+
+  for (var i = 0; i < guests.length; i++) {
+    if (RoomsGuestsAdditions[adRoomNumber.value].includes(guests[i])) {
+      guests[i].disabled = false;
+      RoomsGuestsAdditions[adRoomNumber.value][0].selected = true;
+    } else {
+      guests[i].disabled = true;
+    }
   }
+};
+
+var resetFormDataHandler = function () {
+  adPrice.placeholder = '5000';
+  deactivatePage();
 };
 
 var activatePage = function () {
@@ -179,6 +162,7 @@ var activatePage = function () {
 };
 
 var deactivatePage = function () {
+  dialogWindow.classList.add('map--faded');
   setFormFieldsDisabled(true);
   adForm.classList.add('ad-form--disabled');
   adTitle.removeEventListener('invalid', inputTitleEditHandler);
@@ -209,7 +193,7 @@ deactivatePage();
 mainPin.addEventListener('mousedown', activatePage);
 mainPin.addEventListener('mousedown', activateAndFillAddress);
 mainPin.addEventListener('keydown', buttonKeydownHandler);
-
+resetButton.addEventListener('click', resetFormDataHandler);
 
 // var pinsContainer = dialogWindow.querySelector('.map__pins');
 //
