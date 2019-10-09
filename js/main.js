@@ -8,14 +8,22 @@
     window.form.activateAndFillAddress();
     window.pin.activatePins();
     mainPin.removeEventListener('mousedown', activatePage);
+    mainPin.removeEventListener('keydown', activatePageByKeydownHandler);
   };
 
-  var deactivatePage = function () {
+  var activatePageByKeydownHandler = function (evt) {
+    if (window.util.isEnterEvent(evt)) {
+      activatePage();
+    }
+  };
+
+  var deactivatePageHandler = function () {
     window.pin.deactivatePins();
     mainPin.addEventListener('mousedown', activatePage);
+    mainPin.addEventListener('keydown', activatePageByKeydownHandler);
   };
 
   mainPin.addEventListener('mousedown', activatePage);
-  mainPin.addEventListener('keydown', window.form.buttonKeydownHandler);
-  resetButton.addEventListener('click', deactivatePage);
+  mainPin.addEventListener('keydown', activatePageByKeydownHandler);
+  resetButton.addEventListener('click', deactivatePageHandler);
 })();
