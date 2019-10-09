@@ -47,7 +47,7 @@
     return cardElement;
   };
 
-  var oneCard = renderCard(window.data.randomProperty);
+  var oneCard = renderCard(window.data.getRandomProperty(1));
 
   var insertCard = function () {
     pinsContainer.appendChild(oneCard);

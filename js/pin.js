@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var QUANTITY = 8;
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
 
@@ -28,7 +29,7 @@
   };
 
   var insertPins = function () {
-    pinsContainer.appendChild(renderPins(window.data.mockProperties));
+    pinsContainer.appendChild(renderPins(window.data.getMockProperties(QUANTITY)));
   };
 
   var resetPins = function () {
@@ -40,9 +41,19 @@
     }
   };
 
-  window.pin = {
-    insertPins: insertPins,
+  var activatePins = function () {
+    insertPins();
+    window.card.insertCard();
+  };
 
-    resetPins: resetPins
+  var deactivatePins = function () {
+    resetPins();
+    window.card.resetCard();
+  };
+
+  window.pin = {
+    activatePins: activatePins,
+
+    deactivatePins: deactivatePins
   };
 })();

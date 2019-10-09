@@ -17,13 +17,13 @@
   var resetButton = adForm.querySelector('.ad-form__reset');
 
   var activateAndFillAddress = function () {
-    activatePage();
+    activateForm();
     getCoordinates();
   };
 
   var buttonKeydownHandler = function (evt) {
     if (window.util.isEnterEvent(evt)) {
-      activatePage();
+      activateForm();
     }
   };
 
@@ -124,13 +124,11 @@
 
   var resetFormDataHandler = function () {
     adPrice.placeholder = '5000';
-    deactivatePage();
+    deactivateForm();
   };
 
-  var activatePage = function () {
+  var activateForm = function () {
     dialogWindow.classList.remove('map--faded');
-    window.pin.insertPins();
-    window.card.insertCard();
     setFormFieldsDisabled(false);
     adForm.classList.remove('ad-form--disabled');
     adTitle.addEventListener('invalid', inputTitleEditHandler);
@@ -144,10 +142,8 @@
     resetButton.addEventListener('click', resetFormDataHandler);
   };
 
-  var deactivatePage = function () {
+  var deactivateForm = function () {
     dialogWindow.classList.add('map--faded');
-    window.pin.resetPins();
-    window.card.resetCard();
     setFormFieldsDisabled(true);
     adForm.classList.add('ad-form--disabled');
     adTitle.removeEventListener('invalid', inputTitleEditHandler);

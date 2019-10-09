@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var QUANTITY = 8;
   var TITLES = ['Предложение', 'Обьявление', 'Мы предлагаем', 'Новинка'];
   var TYPES = ['palace', 'flat', 'house', 'bungalo'];
   var GUESTS = [1, 2, 3, 4, 5];
@@ -59,8 +58,8 @@
   };
 
   window.data = {
-    mockProperties: getMockProperties(QUANTITY),
+    getMockProperties: getMockProperties,
 
-    randomProperty: getRandomProperty(1)
+    getRandomProperty: getRandomProperty
   };
 })();
