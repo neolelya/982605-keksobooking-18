@@ -18,7 +18,7 @@
 
   var activateAndFillAddress = function () {
     activateForm();
-    getCoordinates();
+    setCoordinates();
   };
 
   var buttonKeydownHandler = function (evt) {
@@ -125,6 +125,7 @@
   var resetFormDataHandler = function () {
     adPrice.placeholder = '5000';
     deactivateForm();
+    window.map.deactivateMap();
   };
 
   var activateForm = function () {
@@ -156,7 +157,7 @@
     resetButton.removeEventListener('click', resetFormDataHandler);
   };
 
-  var getCoordinates = function () {
+  var setCoordinates = function () {
     var MAIN_PIN_WIDTH = 62;
     var MAIN_PIN_HEIGHT = 82;
     var x = parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2;

@@ -51,7 +51,7 @@
     window.card.resetCard();
   };
 
-  window.pin = {
+  window.pins = {
     activatePins: activatePins,
 
     deactivatePins: deactivatePins
