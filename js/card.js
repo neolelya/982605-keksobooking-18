@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var renderedCardData;
+
   var dialogWindow = document.querySelector('.map');
 
   var pinsContainer = dialogWindow.querySelector('.map__pins');
@@ -47,14 +49,13 @@
     return cardElement;
   };
 
-  var oneCard = renderCard(window.data.getRandomProperty(1));
-
-  var insertCard = function () {
-    pinsContainer.appendChild(oneCard);
+  var insertCard = function (data) {
+    renderedCardData = renderCard(data);
+    pinsContainer.appendChild(renderedCardData);
   };
 
   var resetCard = function () {
-    pinsContainer.removeChild(oneCard);
+    pinsContainer.removeChild(renderedCardData);
   };
 
   window.card = {
