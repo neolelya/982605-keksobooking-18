@@ -4,10 +4,10 @@
   var TIMEOUT = 5000;
 
   var Url = {
-    DOWNLOAD: 'https://js.dump.academy/keksobooking/data'
+    GET: 'https://js.dump.academy/keksobooking/data'
   };
 
-  var StatusCodes = {
+  var StatusCode = {
     OK: 200,
     BAD_REQUEST: 400,
     UNAUTHORIZED: 401,
@@ -22,19 +22,19 @@
 
     xhr.addEventListener('load', function () {
       switch (xhr.status) {
-        case StatusCodes.OK:
+        case StatusCode.OK:
           onLoad(xhr.response);
           break;
-        case StatusCodes.BAD_REQUEST:
+        case StatusCode.BAD_REQUEST:
           onError('Неверный запрос');
           break;
-        case StatusCodes.UNAUTHORIZED:
+        case StatusCode.UNAUTHORIZED:
           onError('Пользователь не авторизован');
           break;
-        case StatusCodes.NOT_FOUND:
+        case StatusCode.NOT_FOUND:
           onError('Ничего не найдено');
           break;
-        case StatusCodes.INTERNAL_SERVER_ERROR:
+        case StatusCode.INTERNAL_SERVER_ERROR:
           onError('Ошибка на стороне сервера');
           break;
         default:
@@ -56,7 +56,7 @@
   var download = function (onLoad, onError) {
     var xhr = createXhr(onLoad, onError);
 
-    xhr.open('GET', Url.DOWNLOAD);
+    xhr.open('GET', Url.GET);
     xhr.send();
   };
 

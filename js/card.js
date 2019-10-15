@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var renderedCardData;
+  var cardUnit;
 
   var dialogWindow = document.querySelector('.map');
 
@@ -50,12 +50,12 @@
   };
 
   var insertCard = function (data) {
-    renderedCardData = renderCard(data);
-    pinsContainer.appendChild(renderedCardData);
+    cardUnit = renderCard(data);
+    pinsContainer.appendChild(cardUnit);
   };
 
   var resetCard = function () {
-    pinsContainer.removeChild(renderedCardData);
+    pinsContainer.removeChild(cardUnit);
   };
 
   window.card = {
