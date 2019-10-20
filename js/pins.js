@@ -37,8 +37,8 @@
   };
 
   var activatePins = function () {
-    insertPins(window.downloadedData);
-    window.card.insertCard(window.downloadedData[1]);
+    insertPins(window.pins.downloadedData);
+    window.card.insertCard(window.pins.downloadedData[1]);
   };
 
   var deactivatePins = function () {
@@ -47,7 +47,7 @@
   };
 
   var successHandler = function (pins) {
-    window.downloadedData = pins;
+    window.pins.downloadedData = pins;
   };
 
   var errorHandler = function (errorMessage) {
@@ -63,6 +63,8 @@
 
     resetPins: resetPins,
 
-    deactivatePins: deactivatePins
+    deactivatePins: deactivatePins,
+
+    downloadedData: [],
   };
 })();
