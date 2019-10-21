@@ -4,8 +4,6 @@
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
 
-  var downloadedData;
-
   var dialogWindow = document.querySelector('.map');
 
   var pinsContainer = dialogWindow.querySelector('.map__pins');
@@ -21,26 +19,26 @@
     return pinElement;
   };
 
-  var insertPins = function () {
+  var insertPins = function (pins) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < downloadedData.length; i++) {
-      fragment.appendChild(renderPin(downloadedData[i]));
-    }
+    pins.forEach(function (pin) {
+      fragment.appendChild(renderPin(pin));
+    });
     pinsContainer.appendChild(fragment);
   };
 
   var resetPins = function () {
     var activePins = pinsContainer.querySelectorAll('.map__pin');
-    for (var i = 0; i < activePins.length; i++) {
-      if (activePins[i].className !== 'map__pin map__pin--main') {
-        pinsContainer.removeChild(activePins[i]);
+    activePins.forEach(function (pin) {
+      if (pin.className !== 'map__pin map__pin--main') {
+        pinsContainer.removeChild(pin);
       }
-    }
+    });
   };
 
   var activatePins = function () {
-    insertPins();
-    window.card.insertCard(downloadedData[1]);
+    insertPins(window.pins.downloadedData);
+    window.card.insertCard(window.pins.downloadedData[1]);
   };
 
   var deactivatePins = function () {
@@ -49,7 +47,7 @@
   };
 
   var successHandler = function (pins) {
-    downloadedData = pins;
+    window.pins.downloadedData = pins;
   };
 
   var errorHandler = function (errorMessage) {
@@ -59,8 +57,14 @@
   window.backend.download(successHandler, errorHandler);
 
   window.pins = {
+    insertPins: insertPins,
+
     activatePins: activatePins,
 
-    deactivatePins: deactivatePins
+    resetPins: resetPins,
+
+    deactivatePins: deactivatePins,
+
+    downloadedData: [],
   };
 })();

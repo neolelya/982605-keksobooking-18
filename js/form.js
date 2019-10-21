@@ -3,7 +3,6 @@
 (function () {
   var MAX_PRICE = 1000000;
 
-  var dialogWindow = document.querySelector('.map');
   var mainPin = document.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');
   var addressField = document.querySelector('#address');
@@ -129,7 +128,6 @@
   };
 
   var activateForm = function () {
-    dialogWindow.classList.remove('map--faded');
     setFormFieldsDisabled(false);
     adForm.classList.remove('ad-form--disabled');
     adTitle.addEventListener('invalid', inputTitleEditHandler);
@@ -144,7 +142,6 @@
   };
 
   var deactivateForm = function () {
-    dialogWindow.classList.add('map--faded');
     setFormFieldsDisabled(true);
     adForm.classList.add('ad-form--disabled');
     adTitle.removeEventListener('invalid', inputTitleEditHandler);

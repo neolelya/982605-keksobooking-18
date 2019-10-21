@@ -1,13 +1,18 @@
 'use strict';
 
 (function () {
-  var mainPin = document.querySelector('.map__pin--main');
+  var map = document.querySelector('.map');
+  var mainPin = map.querySelector('.map__pin--main');
 
   var activateMap = function () {
+    map.classList.remove('map--faded');
     window.pins.activatePins();
   };
 
   var activateMapHandler = function () {
+    if (!window.pins.downloadedData.length) {
+      return;
+    }
     activateMap();
     window.form.activateAndFillAddress();
     mainPin.removeEventListener('mousedown', activateMapHandler);
@@ -15,6 +20,9 @@
 
   var activateMapByKeydownHandler = function (evt) {
     if (window.util.isEnterEvent(evt)) {
+      if (!window.pins.downloadedData.length) {
+        return;
+      }
       activateMap();
       window.form.activateAndFillAddress();
       mainPin.removeEventListener('mousedown', activateMapHandler);
@@ -23,6 +31,7 @@
   };
 
   var deactivateMap = function () {
+    map.classList.add('map--faded');
     window.pins.deactivatePins();
     mainPin.addEventListener('mousedown', activateMapHandler);
     mainPin.addEventListener('keydown', activateMapByKeydownHandler);
