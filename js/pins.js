@@ -22,7 +22,11 @@
   var insertPins = function (pins) {
     var fragment = document.createDocumentFragment();
     pins.forEach(function (pin) {
-      fragment.appendChild(renderPin(pin));
+      var pinElement = renderPin(pin);
+      fragment.appendChild(pinElement);
+      pinElement.addEventListener('click', function () {
+        window.card.insertCard(pin);
+      });
     });
     pinsContainer.appendChild(fragment);
   };
@@ -38,7 +42,6 @@
 
   var activatePins = function () {
     insertPins(window.pins.downloadedData);
-    window.card.insertCard(window.pins.downloadedData[1]);
   };
 
   var deactivatePins = function () {

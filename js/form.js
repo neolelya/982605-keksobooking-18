@@ -133,7 +133,7 @@
     adTitle.addEventListener('invalid', inputTitleEditHandler);
     adPrice.addEventListener('input', inputPriceMaxLimitHandler);
     adType.addEventListener('input', inputTypeSelectHandler);
-    adPrice.addEventListener('input', inputPriceEditHandler);
+    adPrice.addEventListener('invalid', inputPriceEditHandler);
     adTimeIn.addEventListener('input', inputTimeInSelectHandler);
     adTimeOut.addEventListener('input', inputTimeOutSelectHandler);
     limitGuestsNumbers();
