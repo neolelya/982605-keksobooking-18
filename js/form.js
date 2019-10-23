@@ -46,19 +46,21 @@
     }
   };
 
-  var inputPriceMaxLimitHandler = function () {
-    if (adPrice.value > MAX_PRICE) {
-      adPrice.setCustomValidity('Максимально возможное значение для этого поля - ' + MAX_PRICE);
-    } else {
-      adPrice.setCustomValidity('');
-    }
-  };
-
   var MinPrices = {
     BUNGALO: 0,
     FLAT: 1000,
     HOUSE: 5000,
     PALACE: 10000
+  };
+
+  var inputPriceLimitHandler = function () {
+    if (adPrice.value < MinPrices[adType.value.toUpperCase()]) {
+      adPrice.setCustomValidity('Минимально возможное значение для этого поля - ' + MinPrices[adType.value.toUpperCase()]);
+    } else if (adPrice.value > MAX_PRICE) {
+      adPrice.setCustomValidity('Максимально возможное значение для этого поля - ' + MAX_PRICE);
+    } else {
+      adPrice.setCustomValidity('');
+    }
   };
 
   var inputPriceEditHandler = function () {
@@ -131,9 +133,9 @@
     setFormFieldsDisabled(false);
     adForm.classList.remove('ad-form--disabled');
     adTitle.addEventListener('invalid', inputTitleEditHandler);
-    adPrice.addEventListener('input', inputPriceMaxLimitHandler);
+    adPrice.addEventListener('input', inputPriceLimitHandler);
     adType.addEventListener('input', inputTypeSelectHandler);
-    adPrice.addEventListener('input', inputPriceEditHandler);
+    adPrice.addEventListener('invalid', inputPriceEditHandler);
     adTimeIn.addEventListener('input', inputTimeInSelectHandler);
     adTimeOut.addEventListener('input', inputTimeOutSelectHandler);
     limitGuestsNumbers();
@@ -145,7 +147,7 @@
     setFormFieldsDisabled(true);
     adForm.classList.add('ad-form--disabled');
     adTitle.removeEventListener('invalid', inputTitleEditHandler);
-    adPrice.removeEventListener('input', inputPriceMaxLimitHandler);
+    adPrice.removeEventListener('input', inputPriceLimitHandler);
     adType.removeEventListener('input', inputTypeSelectHandler);
     adPrice.removeEventListener('input', inputPriceEditHandler);
     adTimeIn.removeEventListener('input', inputTimeInSelectHandler);

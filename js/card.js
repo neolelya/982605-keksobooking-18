@@ -9,6 +9,8 @@
 
   var cardTemplate = document.querySelector('#card').content.querySelector('.popup');
 
+  var cardClose;
+
   var getCardsFeatures = function (card) {
     var cardsFeatures = [];
     for (var i = 0; i < card.offer.features.length; i++) {
@@ -49,13 +51,32 @@
     return cardElement;
   };
 
+  var cardCloseClickHandler = function () {
+    resetCard();
+  };
+
+  var cardCloseKeydownHandler = function (evt) {
+    if (window.util.isEscEvent(evt)) {
+      resetCard();
+    }
+  };
+
   var insertCard = function (data) {
+    if (cardUnit) {
+      resetCard();
+    }
     cardUnit = renderCard(data);
     pinsContainer.appendChild(cardUnit);
+    cardClose = cardUnit.querySelector('.popup__close');
+    cardClose.addEventListener('click', cardCloseClickHandler);
+    document.addEventListener('keydown', cardCloseKeydownHandler);
   };
 
   var resetCard = function () {
+    cardClose.removeEventListener('click', cardCloseClickHandler);
+    document.removeEventListener('keydown', cardCloseKeydownHandler);
     pinsContainer.removeChild(cardUnit);
+    cardUnit = null;
   };
 
   window.card = {
