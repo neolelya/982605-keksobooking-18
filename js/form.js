@@ -3,7 +3,6 @@
 (function () {
   var MAX_PRICE = 1000000;
 
-  var mainPin = document.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');
   var addressField = document.querySelector('#address');
   var adTitle = adForm.querySelector('#title');
@@ -14,10 +13,10 @@
   var adRoomNumber = adForm.querySelector('#room_number');
   var adCapacity = adForm.querySelector('#capacity');
   var resetButton = adForm.querySelector('.ad-form__reset');
+  var formSubmitButton = adForm.querySelector('.ad-form__submit');
 
   var activateAndFillAddress = function () {
     activateForm();
-    setCoordinates();
   };
 
   var buttonKeydownHandler = function (evt) {
@@ -46,7 +45,7 @@
     }
   };
 
-  var MinPrices = {
+  var MinPrice = {
     BUNGALO: 0,
     FLAT: 1000,
     HOUSE: 5000,
@@ -54,8 +53,8 @@
   };
 
   var inputPriceLimitHandler = function () {
-    if (adPrice.value < MinPrices[adType.value.toUpperCase()]) {
-      adPrice.setCustomValidity('Минимально возможное значение для этого поля - ' + MinPrices[adType.value.toUpperCase()]);
+    if (adPrice.value < MinPrice[adType.value.toUpperCase()]) {
+      adPrice.setCustomValidity('Минимально возможное значение для этого поля - ' + MinPrice[adType.value.toUpperCase()]);
     } else if (adPrice.value > MAX_PRICE) {
       adPrice.setCustomValidity('Максимально возможное значение для этого поля - ' + MAX_PRICE);
     } else {
@@ -65,13 +64,13 @@
 
   var inputPriceEditHandler = function () {
     if (adPrice.validity.rangeUnderflow) {
-      adPrice.setCustomValidity('Цена за данное предложение не может быть ниже ' + (MinPrices[adType.value.toUpperCase()]) + ' рублей за ночь');
+      adPrice.setCustomValidity('Цена за данное предложение не может быть ниже ' + (MinPrice[adType.value.toUpperCase()]) + ' рублей за ночь');
     }
   };
 
   var inputTypeSelectHandler = function () {
-    adPrice.min = MinPrices[adType.value.toUpperCase()];
-    adPrice.placeholder = window.util.getNumberDigit(MinPrices[adType.value.toUpperCase()]);
+    adPrice.min = MinPrice[adType.value.toUpperCase()];
+    adPrice.placeholder = window.util.getNumberDigit(MinPrice[adType.value.toUpperCase()]);
   };
 
   var inputTimeInSelectHandler = function () {
@@ -124,9 +123,21 @@
   };
 
   var resetFormDataHandler = function () {
+    window.pins.mainPinResetCoordinates();
     adPrice.placeholder = '5000';
     deactivateForm();
     window.map.deactivateMap();
+  };
+
+  var formFocusoutHandler = function (evt) {
+    evt.target.classList.remove('invalid');
+  };
+
+  var submitButtonClickHandler = function () {
+    var invalidInputs = Array.from(adForm.querySelectorAll('input:invalid, select:invalid, textarea:invalid'));
+    invalidInputs.forEach(function (elem) {
+      elem.classList.add('invalid');
+    });
   };
 
   var activateForm = function () {
@@ -140,6 +151,8 @@
     adTimeOut.addEventListener('input', inputTimeOutSelectHandler);
     limitGuestsNumbers();
     adRoomNumber.addEventListener('input', limitGuestsNumbers);
+    formSubmitButton.addEventListener('click', submitButtonClickHandler);
+    adForm.addEventListener('focusout', formFocusoutHandler);
     resetButton.addEventListener('click', resetFormDataHandler);
   };
 
@@ -153,15 +166,12 @@
     adTimeIn.removeEventListener('input', inputTimeInSelectHandler);
     adTimeOut.removeEventListener('input', inputTimeOutSelectHandler);
     adRoomNumber.removeEventListener('input', limitGuestsNumbers);
+    formSubmitButton.removeEventListener('click', submitButtonClickHandler);
+    adForm.removeEventListener('focusout', formFocusoutHandler);
     resetButton.removeEventListener('click', resetFormDataHandler);
   };
 
-  var setCoordinates = function () {
-    var MAIN_PIN_WIDTH = 62;
-    var MAIN_PIN_HEIGHT = 82;
-    var x = parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2;
-    var y = parseInt(mainPin.style.top, 10) + MAIN_PIN_HEIGHT;
-    addressField.readOnly = true;
+  var setCoordinates = function (x, y) {
     addressField.value = x + ', ' + y;
     return addressField;
   };
@@ -169,6 +179,8 @@
   window.form = {
     buttonKeydownHandler: buttonKeydownHandler,
 
-    activateAndFillAddress: activateAndFillAddress
+    activateAndFillAddress: activateAndFillAddress,
+
+    setCoordinates: setCoordinates
   };
 })();

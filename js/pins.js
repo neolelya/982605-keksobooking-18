@@ -3,12 +3,22 @@
 (function () {
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
+  var MAIN_PIN_WIDTH = 62;
+  var MAIN_PIN_HEIGHT = 82;
+  var START_X = 570;
+  var START_Y = 375;
+  var LEFT_LIMIT = 0;
+  var RIGHT_LIMIT = 1135;
+  var TOP_LIMIT = 130;
+  var BOTTOM_LIMIT = 625;
 
   var dialogWindow = document.querySelector('.map');
 
   var pinsContainer = dialogWindow.querySelector('.map__pins');
 
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+
+  var mainPin = dialogWindow.querySelector('.map__pin--main');
 
   var renderPin = function (pin) {
     var pinElement = pinTemplate.cloneNode(true);
@@ -57,6 +67,69 @@
     window.message.renderMessage(errorMessage);
   };
 
+  var Coordinate = function (x, y) {
+    this.x = x;
+    this.y = y;
+  };
+
+  var mainPinMoveHandler = function (evt) {
+    var startCoords = new Coordinate(evt.clientX, evt.clientY);
+
+    var dragged = false;
+
+    var x = parseInt(mainPin.style.left, 10);
+    var y = parseInt(mainPin.style.top, 10);
+
+    var mainPinMouseMoveHandler = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var shift = new Coordinate(moveEvt.clientX - startCoords.x, moveEvt.clientY - startCoords.y);
+
+      if (shift.x !== 0 || shift.y !== 0) {
+        dragged = true;
+      }
+
+      startCoords = new Coordinate(moveEvt.clientX, moveEvt.clientY);
+
+      x = mainPin.offsetLeft + shift.x;
+      y = mainPin.offsetTop + shift.y;
+
+      if (x >= LEFT_LIMIT && x <= RIGHT_LIMIT) {
+        mainPin.style.left = x + 'px';
+      }
+      if (y >= TOP_LIMIT && y <= BOTTOM_LIMIT) {
+        mainPin.style.top = y + 'px';
+      }
+    };
+
+    var handleMouseUpHandler = function (upEvt) {
+      upEvt.preventDefault();
+      window.form.setCoordinates(x + MAIN_PIN_WIDTH / 2, y + MAIN_PIN_HEIGHT);
+
+      document.removeEventListener('mousemove', mainPinMouseMoveHandler);
+      document.removeEventListener('mouseup', handleMouseUpHandler);
+
+      if (dragged) {
+        var handlePreventDefaultHandler = function (prevEvt) {
+          prevEvt.preventDefault();
+
+          mainPin.removeEventListener('click', handlePreventDefaultHandler);
+        };
+        mainPin.addEventListener('click', handlePreventDefaultHandler);
+      }
+    };
+
+    document.addEventListener('mousemove', mainPinMouseMoveHandler);
+    document.addEventListener('mouseup', handleMouseUpHandler);
+  };
+
+  mainPin.addEventListener('mousedown', mainPinMoveHandler);
+
+  var mainPinResetCoordinates = function () {
+    mainPin.style.left = START_X + 'px';
+    mainPin.style.top = START_Y + 'px';
+  };
+
   window.backend.download(successHandler, errorHandler);
 
   window.pins = {
@@ -69,5 +142,7 @@
     deactivatePins: deactivatePins,
 
     downloadedData: [],
+
+    mainPinResetCoordinates: mainPinResetCoordinates
   };
 })();

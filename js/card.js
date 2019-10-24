@@ -73,6 +73,9 @@
   };
 
   var resetCard = function () {
+    if (!cardUnit) {
+      return;
+    }
     cardClose.removeEventListener('click', cardCloseClickHandler);
     document.removeEventListener('keydown', cardCloseKeydownHandler);
     pinsContainer.removeChild(cardUnit);
