@@ -1,17 +1,6 @@
 'use strict';
 
 (function () {
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
-  var MAIN_PIN_WIDTH = 62;
-  var MAIN_PIN_HEIGHT = 82;
-  var START_X = 570;
-  var START_Y = 375;
-  var LEFT_LIMIT = 0;
-  var RIGHT_LIMIT = 1135;
-  var TOP_LIMIT = 130;
-  var BOTTOM_LIMIT = 625;
-
   var dialogWindow = document.querySelector('.map');
 
   var pinsContainer = dialogWindow.querySelector('.map__pins');
@@ -19,6 +8,17 @@
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
   var mainPin = dialogWindow.querySelector('.map__pin--main');
+
+  var PIN_WIDTH = 50;
+  var PIN_HEIGHT = 70;
+  var MAIN_PIN_WIDTH = 62;
+  var MAIN_PIN_HEIGHT = 82;
+  var START_X = 570;
+  var START_Y = 375;
+  var LEFT_LIMIT = 0;
+  var RIGHT_LIMIT = pinsContainer.offsetWidth - MAIN_PIN_WIDTH;
+  var TOP_LIMIT = 130;
+  var BOTTOM_LIMIT = 625;
 
   var renderPin = function (pin) {
     var pinElement = pinTemplate.cloneNode(true);
@@ -67,13 +67,11 @@
     window.message.renderMessage(errorMessage);
   };
 
-  var Coordinate = function (x, y) {
-    this.x = x;
-    this.y = y;
-  };
-
   var mainPinMoveHandler = function (evt) {
-    var startCoords = new Coordinate(evt.clientX, evt.clientY);
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
 
     var dragged = false;
 
@@ -83,13 +81,19 @@
     var mainPinMouseMoveHandler = function (moveEvt) {
       moveEvt.preventDefault();
 
-      var shift = new Coordinate(moveEvt.clientX - startCoords.x, moveEvt.clientY - startCoords.y);
+      var shift = {
+        x: moveEvt.clientX - startCoords.x,
+        y: moveEvt.clientY - startCoords.y
+      };
 
       if (shift.x !== 0 || shift.y !== 0) {
         dragged = true;
       }
 
-      startCoords = new Coordinate(moveEvt.clientX, moveEvt.clientY);
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
 
       x = mainPin.offsetLeft + shift.x;
       y = mainPin.offsetTop + shift.y;
