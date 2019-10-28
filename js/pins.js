@@ -1,6 +1,13 @@
 'use strict';
 
 (function () {
+  var PIN_WIDTH = 50;
+  var PIN_HEIGHT = 70;
+  var MAIN_PIN_WIDTH = 62;
+  var MAIN_PIN_HEIGHT = 82;
+  var START_X = 570;
+  var START_Y = 375;
+
   var dialogWindow = document.querySelector('.map');
 
   var pinsContainer = dialogWindow.querySelector('.map__pins');
@@ -9,16 +16,12 @@
 
   var mainPin = dialogWindow.querySelector('.map__pin--main');
 
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
-  var MAIN_PIN_WIDTH = 62;
-  var MAIN_PIN_HEIGHT = 82;
-  var START_X = 570;
-  var START_Y = 375;
-  var LEFT_LIMIT = 0;
-  var RIGHT_LIMIT = pinsContainer.offsetWidth - MAIN_PIN_WIDTH;
-  var TOP_LIMIT = 130;
-  var BOTTOM_LIMIT = 625;
+  var mapLimit = {
+    LEFT_LIMIT: 0,
+    RIGHT_LIMIT: pinsContainer.offsetWidth - MAIN_PIN_WIDTH,
+    TOP_LIMIT: 130,
+    BOTTOM_LIMIT: 625
+  };
 
   var renderPin = function (pin) {
     var pinElement = pinTemplate.cloneNode(true);
@@ -64,7 +67,7 @@
   };
 
   var errorHandler = function (errorMessage) {
-    window.message.renderMessage(errorMessage);
+    window.message.renderErrorMessage(errorMessage);
   };
 
   var mainPinMoveHandler = function (evt) {
@@ -98,10 +101,10 @@
       x = mainPin.offsetLeft + shift.x;
       y = mainPin.offsetTop + shift.y;
 
-      if (x >= LEFT_LIMIT && x <= RIGHT_LIMIT) {
+      if (x >= mapLimit.LEFT_LIMIT && x <= mapLimit.RIGHT_LIMIT) {
         mainPin.style.left = x + 'px';
       }
-      if (y >= TOP_LIMIT && y <= BOTTOM_LIMIT) {
+      if (y >= mapLimit.TOP_LIMIT && y <= mapLimit.BOTTOM_LIMIT) {
         mainPin.style.top = y + 'px';
       }
     };
