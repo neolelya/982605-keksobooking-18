@@ -13,7 +13,6 @@
   var adRoomNumber = adForm.querySelector('#room_number');
   var adCapacity = adForm.querySelector('#capacity');
   var resetButton = adForm.querySelector('.ad-form__reset');
-  var formSubmitButton = adForm.querySelector('.ad-form__submit');
 
   var activateAndFillAddress = function () {
     activateForm();
@@ -52,7 +51,7 @@
     PALACE: 10000
   };
 
-  var inputPriceLimitHandler = function () {
+  var setPriceLimitValidity = function () {
     if (adPrice.value < MinPrice[adType.value.toUpperCase()]) {
       adPrice.setCustomValidity('Минимально возможное значение для этого поля - ' + MinPrice[adType.value.toUpperCase()]);
     } else if (adPrice.value > MAX_PRICE) {
@@ -71,6 +70,7 @@
   var inputTypeSelectHandler = function () {
     adPrice.min = MinPrice[adType.value.toUpperCase()];
     adPrice.placeholder = window.util.getNumberDigit(MinPrice[adType.value.toUpperCase()]);
+    setPriceLimitValidity();
   };
 
   var inputTimeInSelectHandler = function () {
@@ -122,7 +122,7 @@
     }
   };
 
-  var resetFormDataHandler = function () {
+  var resetFormData = function () {
     window.pins.mainPinResetCoordinates();
     adPrice.placeholder = '5000';
     deactivateForm();
@@ -133,7 +133,20 @@
     evt.target.classList.remove('invalid');
   };
 
-  var submitButtonClickHandler = function () {
+  var formUploadHandler = function () {
+    resetFormData();
+    adForm.reset();
+    window.message.renderSuccessMessage();
+  };
+
+  var formErrorHandler = function (errorMessage) {
+    window.message.renderErrorMessage(errorMessage);
+  };
+
+  var formSubmitHandler = function (evt) {
+    evt.preventDefault();
+    var formData = new FormData(adForm);
+    window.backend.upload(formData, formUploadHandler, formErrorHandler);
     var invalidInputs = Array.from(adForm.querySelectorAll('input:invalid, select:invalid, textarea:invalid'));
     invalidInputs.forEach(function (elem) {
       elem.classList.add('invalid');
@@ -144,31 +157,31 @@
     setFormFieldsDisabled(false);
     adForm.classList.remove('ad-form--disabled');
     adTitle.addEventListener('invalid', inputTitleEditHandler);
-    adPrice.addEventListener('input', inputPriceLimitHandler);
+    adPrice.addEventListener('input', setPriceLimitValidity);
     adType.addEventListener('input', inputTypeSelectHandler);
     adPrice.addEventListener('invalid', inputPriceEditHandler);
     adTimeIn.addEventListener('input', inputTimeInSelectHandler);
     adTimeOut.addEventListener('input', inputTimeOutSelectHandler);
     limitGuestsNumbers();
     adRoomNumber.addEventListener('input', limitGuestsNumbers);
-    formSubmitButton.addEventListener('click', submitButtonClickHandler);
+    adForm.addEventListener('submit', formSubmitHandler);
     adForm.addEventListener('focusout', formFocusoutHandler);
-    resetButton.addEventListener('click', resetFormDataHandler);
+    resetButton.addEventListener('click', resetFormData);
   };
 
   var deactivateForm = function () {
     setFormFieldsDisabled(true);
     adForm.classList.add('ad-form--disabled');
     adTitle.removeEventListener('invalid', inputTitleEditHandler);
-    adPrice.removeEventListener('input', inputPriceLimitHandler);
+    adPrice.removeEventListener('input', setPriceLimitValidity);
     adType.removeEventListener('input', inputTypeSelectHandler);
     adPrice.removeEventListener('input', inputPriceEditHandler);
     adTimeIn.removeEventListener('input', inputTimeInSelectHandler);
     adTimeOut.removeEventListener('input', inputTimeOutSelectHandler);
     adRoomNumber.removeEventListener('input', limitGuestsNumbers);
-    formSubmitButton.removeEventListener('click', submitButtonClickHandler);
+    adForm.removeEventListener('submit', formSubmitHandler);
     adForm.removeEventListener('focusout', formFocusoutHandler);
-    resetButton.removeEventListener('click', resetFormDataHandler);
+    resetButton.removeEventListener('click', resetFormData);
   };
 
   var setCoordinates = function (x, y) {

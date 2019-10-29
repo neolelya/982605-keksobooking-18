@@ -4,7 +4,8 @@
   var TIMEOUT = 5000;
 
   var Url = {
-    GET: 'https://js.dump.academy/keksobooking/data'
+    GET: 'https://js.dump.academy/keksobooking/data',
+    POST: 'https://js.dump.academy/keksobooking'
   };
 
   var StatusCode = {
@@ -60,7 +61,16 @@
     xhr.send();
   };
 
+  var upload = function (data, onLoad, onError) {
+    var xhr = createXhr(onLoad, onError);
+
+    xhr.open('POST', Url.POST);
+    xhr.send(data);
+  };
+
   window.backend = {
-    download: download
+    download: download,
+
+    upload: upload
   };
 })();
