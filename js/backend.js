@@ -5,7 +5,7 @@
 
   var Url = {
     GET: 'https://js.dump.academy/keksobooking/data',
-    SEND: 'https://js.dump.academy/keksobooking'
+    POST: 'https://js.dump.academy/keksobooking'
   };
 
   var StatusCode = {
@@ -64,7 +64,7 @@
   var upload = function (data, onLoad, onError) {
     var xhr = createXhr(onLoad, onError);
 
-    xhr.open('POST', Url.SEND);
+    xhr.open('POST', Url.POST);
     xhr.send(data);
   };
 
