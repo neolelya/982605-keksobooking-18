@@ -13,6 +13,7 @@
   var adRoomNumber = adForm.querySelector('#room_number');
   var adCapacity = adForm.querySelector('#capacity');
   var resetButton = adForm.querySelector('.ad-form__reset');
+  var formFilter = document.querySelector('.map__filters');
 
   var activateAndFillAddress = function () {
     activateForm();
@@ -123,6 +124,7 @@
   };
 
   var resetFormData = function () {
+    formFilter.reset();
     window.pins.mainPinResetCoordinates();
     adPrice.placeholder = '5000';
     deactivateForm();
