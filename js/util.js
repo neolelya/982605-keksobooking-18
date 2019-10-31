@@ -3,6 +3,7 @@
 (function () {
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
+  var DEBOUNCE_INTERVAL = 500;
 
   var getRandomArrayItem = function (arr) {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -41,6 +42,20 @@
     return count + ' ' + words[(count % 100 > 4 && count % 100 < 20) ? 2 : cases[Math.min(count % 10, 5)]];
   };
 
+  var debounce = function (cb) {
+    var lastTimeout = null;
+
+    return function () {
+      var parameters = arguments;
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        cb.apply(null, parameters);
+      }, DEBOUNCE_INTERVAL);
+    };
+  };
+
   window.util = {
     isEscEvent: function (evt) {
       return evt.keyCode === ESC_KEYCODE;
@@ -58,6 +73,8 @@
 
     getNumberDigit: getNumberDigit,
 
-    pluralize: pluralize
+    pluralize: pluralize,
+
+    debounce: debounce
   };
 })();
