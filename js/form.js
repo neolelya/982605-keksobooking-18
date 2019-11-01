@@ -2,6 +2,7 @@
 
 (function () {
   var MAX_PRICE = 1000000;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   var adForm = document.querySelector('.ad-form');
   var addressField = document.querySelector('#address');
@@ -14,6 +15,12 @@
   var adCapacity = adForm.querySelector('#capacity');
   var resetButton = adForm.querySelector('.ad-form__reset');
   var formFilter = document.querySelector('.map__filters');
+  var avatarInput = adForm.querySelector('.ad-form__field input[type="file"]');
+  var avatarPreview = adForm.querySelector('.ad-form-header__preview img');
+  var avatarLabel = adForm.querySelector('.ad-form__field');
+  var propertyInput = adForm.querySelector('.ad-form__upload input[type="file"]');
+  var propertyPreview = adForm.querySelector('.ad-form__photo');
+  var propertyLabel = adForm.querySelector('.ad-form__drop-zone');
 
   var activateAndFillAddress = function () {
     activateForm();
@@ -125,6 +132,8 @@
 
   var resetFormData = function () {
     formFilter.reset();
+    avatarPreview.src = 'img/muffin-grey.svg';
+    propertyPreview.innerHTML = '';
     window.pins.mainPinResetCoordinates();
     adPrice.placeholder = '5000';
     deactivateForm();
@@ -154,6 +163,50 @@
       elem.classList.add('invalid');
     });
   };
+
+  var onInputFileChange = function (file, image) {
+    if (file) {
+      var fileName = file.name.toLowerCase();
+      var matches = FILE_TYPES.some(function (it) {
+        return fileName.endsWith(it);
+      });
+
+      if (matches) {
+        var reader = new FileReader();
+
+        reader.addEventListener('load', function () {
+          image.src = reader.result;
+        });
+        reader.readAsDataURL(file);
+      }
+    }
+  };
+
+  var preventDropEvent = function (element) {
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (eventName) {
+      element.addEventListener(eventName, function (evt) {
+        evt.preventDefault();
+      }, false);
+    });
+  };
+
+  avatarInput.addEventListener('change', function () {
+    onInputFileChange(avatarInput.files[0], avatarPreview);
+  });
+  preventDropEvent(avatarLabel);
+  avatarLabel.addEventListener('drop', function (evt) {
+    onInputFileChange(evt.dataTransfer.files[0], avatarPreview);
+  });
+
+  propertyInput.addEventListener('change', function () {
+    propertyPreview.innerHTML = '<img src="" width="100%" height="100%" alt="Фотография жилья">';
+    onInputFileChange(propertyInput.files[0], propertyPreview.children[0]);
+  });
+  preventDropEvent(propertyLabel);
+  propertyLabel.addEventListener('drop', function (evt) {
+    propertyPreview.innerHTML = '<img src="" width="100%" height="100%" alt="Фотография жилья">';
+    onInputFileChange(evt.dataTransfer.files[0], propertyPreview.children[0]);
+  });
 
   var activateForm = function () {
     setFormFieldsDisabled(false);
