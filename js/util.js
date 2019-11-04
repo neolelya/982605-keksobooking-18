@@ -5,26 +5,6 @@
   var ENTER_KEYCODE = 13;
   var DEBOUNCE_INTERVAL = 500;
 
-  var getRandomArrayItem = function (arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
-  };
-
-  var getRandomFromRange = function (min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
-
-  var getRandomArray = function (values) {
-    var result = [];
-    for (var i = 0; i < values.length; i++) {
-      if (window.util.getRandomFromRange(0, 1)) {
-        result.push(values[i]);
-      }
-    }
-    return result;
-  };
-
   var getNumberDigit = function (number) {
     var string = '' + number;
     var result = '';
@@ -64,12 +44,6 @@
     isEnterEvent: function (evt) {
       return evt.keyCode === ENTER_KEYCODE;
     },
-
-    getRandomArrayItem: getRandomArrayItem,
-
-    getRandomFromRange: getRandomFromRange,
-
-    getRandomArray: getRandomArray,
 
     getNumberDigit: getNumberDigit,
 
