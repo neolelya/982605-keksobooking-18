@@ -26,19 +26,15 @@
     activateForm();
   };
 
-  var buttonKeydownHandler = function (evt) {
-    if (window.util.isEnterEvent(evt)) {
-      activateForm();
-    }
-  };
-
   var setFormFieldsDisabled = function (value) {
-    var formFields = document.querySelectorAll('.ad-form input, .ad-form select, .map__filters input, .map__filters select');
+    var formFields = document.querySelectorAll('.ad-form input, .ad-form select, .ad-form textarea, .ad-form button, .map__filters input, .map__filters select');
 
     for (var i = 0; i < formFields.length; i++) {
       formFields[i].disabled = value;
     }
   };
+
+  setFormFieldsDisabled(true);
 
   var inputTitleEditHandler = function () {
     if (adTitle.validity.tooShort) {
@@ -82,47 +78,27 @@
   };
 
   var inputTimeInSelectHandler = function () {
-    switch (adTimeIn.value) {
-      case '12:00':
-        adTimeOut.value = '12:00';
-        break;
-      case '13:00':
-        adTimeOut.value = '13:00';
-        break;
-      case '14:00':
-        adTimeOut.value = '14:00';
-        break;
-    }
+    adTimeOut.value = adTimeIn.value;
   };
 
   var inputTimeOutSelectHandler = function () {
-    switch (adTimeOut.value) {
-      case '12:00':
-        adTimeIn.value = '12:00';
-        break;
-      case '13:00':
-        adTimeIn.value = '13:00';
-        break;
-      case '14:00':
-        adTimeIn.value = '14:00';
-        break;
-    }
+    adTimeIn.value = adTimeOut.value;
   };
 
   var limitGuestsNumbers = function () {
     var guests = [0, 1, 2, 3];
 
-    var RoomsGuestsAdditions = {
+    var RoomsToGuestsRelation = {
       1: [2],
       2: [2, 1],
       3: [2, 1, 0],
       100: [3]
     };
 
-    adCapacity[RoomsGuestsAdditions[adRoomNumber.value][0]].selected = true;
+    adCapacity[RoomsToGuestsRelation[adRoomNumber.value][0]].selected = true;
 
     for (var i = 0; i < guests.length; i++) {
-      if (RoomsGuestsAdditions[adRoomNumber.value].includes(guests[i])) {
+      if (RoomsToGuestsRelation[adRoomNumber.value].includes(guests[i])) {
         adCapacity[guests[i]].disabled = false;
       } else {
         adCapacity[guests[i]].disabled = true;
@@ -132,10 +108,11 @@
 
   var resetFormData = function () {
     formFilter.reset();
+    adForm.reset();
     avatarPreview.src = 'img/muffin-grey.svg';
     propertyPreview.innerHTML = '';
     window.pins.mainPinResetCoordinates();
-    adPrice.placeholder = '5000';
+    adPrice.placeholder = MinPrice.HOUSE;
     deactivateForm();
     window.map.deactivateMap();
   };
@@ -213,12 +190,12 @@
     adForm.classList.remove('ad-form--disabled');
     adTitle.addEventListener('invalid', inputTitleEditHandler);
     adPrice.addEventListener('input', setPriceLimitValidity);
-    adType.addEventListener('input', inputTypeSelectHandler);
+    adType.addEventListener('change', inputTypeSelectHandler);
     adPrice.addEventListener('invalid', inputPriceEditHandler);
-    adTimeIn.addEventListener('input', inputTimeInSelectHandler);
-    adTimeOut.addEventListener('input', inputTimeOutSelectHandler);
+    adTimeIn.addEventListener('change', inputTimeInSelectHandler);
+    adTimeOut.addEventListener('change', inputTimeOutSelectHandler);
     limitGuestsNumbers();
-    adRoomNumber.addEventListener('input', limitGuestsNumbers);
+    adRoomNumber.addEventListener('change', limitGuestsNumbers);
     adForm.addEventListener('submit', formSubmitHandler);
     adForm.addEventListener('focusout', formFocusoutHandler);
     resetButton.addEventListener('click', resetFormData);
@@ -229,11 +206,11 @@
     adForm.classList.add('ad-form--disabled');
     adTitle.removeEventListener('invalid', inputTitleEditHandler);
     adPrice.removeEventListener('input', setPriceLimitValidity);
-    adType.removeEventListener('input', inputTypeSelectHandler);
-    adPrice.removeEventListener('input', inputPriceEditHandler);
-    adTimeIn.removeEventListener('input', inputTimeInSelectHandler);
-    adTimeOut.removeEventListener('input', inputTimeOutSelectHandler);
-    adRoomNumber.removeEventListener('input', limitGuestsNumbers);
+    adType.removeEventListener('change', inputTypeSelectHandler);
+    adPrice.removeEventListener('invalid', inputPriceEditHandler);
+    adTimeIn.removeEventListener('change', inputTimeInSelectHandler);
+    adTimeOut.removeEventListener('change', inputTimeOutSelectHandler);
+    adRoomNumber.removeEventListener('change', limitGuestsNumbers);
     adForm.removeEventListener('submit', formSubmitHandler);
     adForm.removeEventListener('focusout', formFocusoutHandler);
     resetButton.removeEventListener('click', resetFormData);
@@ -245,8 +222,6 @@
   };
 
   window.form = {
-    buttonKeydownHandler: buttonKeydownHandler,
-
     activateAndFillAddress: activateAndFillAddress,
 
     setCoordinates: setCoordinates
