@@ -37,33 +37,72 @@
       house: 'Дом',
       palace: 'Дворец'
     };
-    cardElement.querySelector('.popup__title').textContent = card.offer.title;
-    cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
-    cardElement.querySelector('.popup__text--price').textContent = card.offer.price + ' ₽/ночь';
-    cardElement.querySelector('.popup__type').textContent = cardTypeNames[card.offer.type];
-    cardElement.querySelector('.popup__text--capacity').textContent = window.util.pluralize(card.offer.rooms, ['комната', 'комнаты', 'комнат']) + ' для ' + card.offer.guests + ((card.offer.guests > 1) ? ' гостей' : ' гостя');
-    cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
-    cardElement.querySelector('.popup__features').innerHTML = getCardsFeatures(card);
-    cardElement.querySelector('.popup__description').textContent = card.offer.description;
-    cardElement.querySelector('.popup__photos').innerHTML = getPhotos(card, cardElement.querySelector('.popup__photos img'));
-    cardElement.querySelector('.popup__avatar').src = card.author.avatar;
-
+    if (card.offer.title) {
+      cardElement.querySelector('.popup__title').textContent = card.offer.title;
+    } else {
+      cardElement.querySelector('.popup__title').classList.add('visually-hidden');
+    }
+    if (card.offer.address) {
+      cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
+    } else {
+      cardElement.querySelector('.popup__text--address').classList.add('visually-hidden');
+    }
+    if (card.offer.price) {
+      cardElement.querySelector('.popup__text--price').textContent = card.offer.price + ' ₽/ночь';
+    } else {
+      cardElement.querySelector('.popup__text--price').classList.add('visually-hidden');
+    }
+    if (card.offer.type) {
+      cardElement.querySelector('.popup__type').textContent = cardTypeNames[card.offer.type];
+    } else {
+      cardElement.querySelector('.popup__type').classList.add('visually-hidden');
+    }
+    if (card.offer.rooms && card.offer.guests) {
+      cardElement.querySelector('.popup__text--capacity').textContent = window.util.pluralize(card.offer.rooms, ['комната', 'комнаты', 'комнат']) + ' для ' + card.offer.guests + ((card.offer.guests > 1) ? ' гостей' : ' гостя');
+    } else {
+      cardElement.querySelector('.popup__text--capacity').classList.add('visually-hidden');
+    }
+    if (card.offer.checkin && card.offer.checkout) {
+      cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
+    } else {
+      cardElement.querySelector('.popup__text--time').classList.add('visually-hidden');
+    }
+    if (card.offer.features) {
+      cardElement.querySelector('.popup__features').innerHTML = getCardsFeatures(card);
+    } else {
+      cardElement.querySelector('.popup__features').classList.add('visually-hidden');
+    }
+    if (card.offer.description) {
+      cardElement.querySelector('.popup__description').textContent = card.offer.description;
+    } else {
+      cardElement.querySelector('.popup__description').classList.add('visually-hidden');
+    }
+    if (card.offer.photos) {
+      cardElement.querySelector('.popup__photos').innerHTML = getPhotos(card, cardElement.querySelector('.popup__photos img'));
+    } else {
+      cardElement.querySelector('.popup__photos').classList.add('visually-hidden');
+    }
+    if (card.author.avatar) {
+      cardElement.querySelector('.popup__avatar').src = card.author.avatar;
+    } else {
+      cardElement.querySelector('.popup__avatar').classList.add('visually-hidden');
+    }
     return cardElement;
   };
 
   var cardCloseClickHandler = function () {
-    resetCard();
+    reset();
   };
 
   var cardCloseKeydownHandler = function (evt) {
     if (window.util.isEscEvent(evt)) {
-      resetCard();
+      reset();
     }
   };
 
-  var insertCard = function (data) {
+  var insert = function (data) {
     if (cardUnit) {
-      resetCard();
+      reset();
     }
     cardUnit = renderCard(data);
     pinsContainer.appendChild(cardUnit);
@@ -72,7 +111,7 @@
     document.addEventListener('keydown', cardCloseKeydownHandler);
   };
 
-  var resetCard = function () {
+  var reset = function () {
     if (!cardUnit) {
       return;
     }
@@ -83,8 +122,8 @@
   };
 
   window.card = {
-    insertCard: insertCard,
+    insert: insert,
 
-    resetCard: resetCard
+    reset: reset
   };
 })();

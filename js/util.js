@@ -5,7 +5,7 @@
   var ENTER_KEYCODE = 13;
   var DEBOUNCE_INTERVAL = 500;
 
-  var getNumberDigit = function (number) {
+  var divideNumberByDigits = function (number) {
     var string = '' + number;
     var result = '';
     for (var i = string.length - 1; i >= 0; i--) {
@@ -45,7 +45,7 @@
       return evt.keyCode === ENTER_KEYCODE;
     },
 
-    getNumberDigit: getNumberDigit,
+    divideNumberByDigits: divideNumberByDigits,
 
     pluralize: pluralize,
 

@@ -4,6 +4,13 @@
   var MAX_PRICE = 1000000;
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
+  var MinPrice = {
+    BUNGALO: 0,
+    FLAT: 1000,
+    HOUSE: 5000,
+    PALACE: 10000
+  };
+
   var adForm = document.querySelector('.ad-form');
   var addressField = document.querySelector('#address');
   var adTitle = adForm.querySelector('#title');
@@ -21,10 +28,6 @@
   var propertyInput = adForm.querySelector('.ad-form__upload input[type="file"]');
   var propertyPreview = adForm.querySelector('.ad-form__photo');
   var propertyLabel = adForm.querySelector('.ad-form__drop-zone');
-
-  var activateAndFillAddress = function () {
-    activateForm();
-  };
 
   var setFormFieldsDisabled = function (value) {
     var formFields = document.querySelectorAll('.ad-form input, .ad-form select, .ad-form textarea, .ad-form button, .map__filters input, .map__filters select');
@@ -48,13 +51,6 @@
     }
   };
 
-  var MinPrice = {
-    BUNGALO: 0,
-    FLAT: 1000,
-    HOUSE: 5000,
-    PALACE: 10000
-  };
-
   var setPriceLimitValidity = function () {
     if (adPrice.value < MinPrice[adType.value.toUpperCase()]) {
       adPrice.setCustomValidity('Минимально возможное значение для этого поля - ' + MinPrice[adType.value.toUpperCase()]);
@@ -73,7 +69,7 @@
 
   var inputTypeSelectHandler = function () {
     adPrice.min = MinPrice[adType.value.toUpperCase()];
-    adPrice.placeholder = window.util.getNumberDigit(MinPrice[adType.value.toUpperCase()]);
+    adPrice.placeholder = window.util.divideNumberByDigits(MinPrice[adType.value.toUpperCase()]);
     setPriceLimitValidity();
   };
 
@@ -88,17 +84,17 @@
   var limitGuestsNumbers = function () {
     var guests = [0, 1, 2, 3];
 
-    var RoomsToGuestsRelation = {
+    var roomsToGuestsRelation = {
       1: [2],
       2: [2, 1],
       3: [2, 1, 0],
       100: [3]
     };
 
-    adCapacity[RoomsToGuestsRelation[adRoomNumber.value][0]].selected = true;
+    adCapacity[roomsToGuestsRelation[adRoomNumber.value][0]].selected = true;
 
     for (var i = 0; i < guests.length; i++) {
-      if (RoomsToGuestsRelation[adRoomNumber.value].includes(guests[i])) {
+      if (roomsToGuestsRelation[adRoomNumber.value].includes(guests[i])) {
         adCapacity[guests[i]].disabled = false;
       } else {
         adCapacity[guests[i]].disabled = true;
@@ -114,7 +110,7 @@
     window.pins.mainPinResetCoordinates();
     adPrice.placeholder = MinPrice.HOUSE;
     deactivateForm();
-    window.map.deactivateMap();
+    window.map.deactivate();
   };
 
   var formFocusoutHandler = function (evt) {
@@ -124,11 +120,11 @@
   var formUploadHandler = function () {
     resetFormData();
     adForm.reset();
-    window.message.renderSuccessMessage();
+    window.message.renderSuccess();
   };
 
   var formErrorHandler = function (errorMessage) {
-    window.message.renderErrorMessage(errorMessage);
+    window.message.renderError(errorMessage);
   };
 
   var formSubmitHandler = function (evt) {
@@ -141,7 +137,7 @@
     });
   };
 
-  var onInputFileChange = function (file, image) {
+  var changeInputFile = function (file, image) {
     if (file) {
       var fileName = file.name.toLowerCase();
       var matches = FILE_TYPES.some(function (it) {
@@ -168,21 +164,21 @@
   };
 
   avatarInput.addEventListener('change', function () {
-    onInputFileChange(avatarInput.files[0], avatarPreview);
+    changeInputFile(avatarInput.files[0], avatarPreview);
   });
   preventDropEvent(avatarLabel);
   avatarLabel.addEventListener('drop', function (evt) {
-    onInputFileChange(evt.dataTransfer.files[0], avatarPreview);
+    changeInputFile(evt.dataTransfer.files[0], avatarPreview);
   });
 
   propertyInput.addEventListener('change', function () {
     propertyPreview.innerHTML = '<img src="" width="100%" height="100%" alt="Фотография жилья">';
-    onInputFileChange(propertyInput.files[0], propertyPreview.children[0]);
+    changeInputFile(propertyInput.files[0], propertyPreview.children[0]);
   });
   preventDropEvent(propertyLabel);
   propertyLabel.addEventListener('drop', function (evt) {
     propertyPreview.innerHTML = '<img src="" width="100%" height="100%" alt="Фотография жилья">';
-    onInputFileChange(evt.dataTransfer.files[0], propertyPreview.children[0]);
+    changeInputFile(evt.dataTransfer.files[0], propertyPreview.children[0]);
   });
 
   var activateForm = function () {
@@ -222,7 +218,7 @@
   };
 
   window.form = {
-    activateAndFillAddress: activateAndFillAddress,
+    activateForm: activateForm,
 
     setCoordinates: setCoordinates
   };
