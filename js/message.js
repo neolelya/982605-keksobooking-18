@@ -4,55 +4,54 @@
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
   var successTemplate = document.querySelector('#success').content.querySelector('.success');
 
-
-  var renderErrorMessage = function (errorMessage) {
-    var newError = errorTemplate.cloneNode(true);
-    newError.querySelector('.error__message').textContent = errorMessage;
-    document.body.appendChild(newError);
+  var renderError = function (message) {
+    var errorMessage = errorTemplate.cloneNode(true);
+    errorMessage.querySelector('.error__message').textContent = message;
+    document.body.appendChild(errorMessage);
 
     document.addEventListener('keydown', function (evt) {
       if (window.util.isEscEvent(evt)) {
-        document.body.removeChild(newError);
+        document.body.removeChild(errorMessage);
       }
     });
 
     document.addEventListener('click', function (evt) {
-      if (evt.target !== newError.querySelector('.error__button')) {
-        newError.classList.add('visually-hidden');
+      if (evt.target !== errorMessage.querySelector('.error__button')) {
+        document.body.removeChild(errorMessage);
       }
     });
-    newError.querySelector('.error__button').addEventListener('click', function () {
-      newError.classList.add('visually-hidden');
+    errorMessage.querySelector('.error__button').addEventListener('click', function () {
+      document.body.removeChild(errorMessage);
     });
   };
 
-  var renderSuccessMessage = function () {
-    var newSuccess = successTemplate.cloneNode(true);
-    document.body.appendChild(newSuccess);
+  var renderSuccess = function () {
+    var successMessage = successTemplate.cloneNode(true);
+    document.body.appendChild(successMessage);
 
     var successEscButtonHandler = function (evt) {
       if (window.util.isEscEvent(evt)) {
         document.removeEventListener('click', successClickHandler);
         document.removeEventListener('keydown', successEscButtonHandler);
-        document.body.removeChild(newSuccess);
+        document.body.removeChild(successMessage);
       }
     };
 
     var successClickHandler = function () {
       document.removeEventListener('click', successClickHandler);
       document.removeEventListener('keydown', successEscButtonHandler);
-      document.body.removeChild(newSuccess);
+      document.body.removeChild(successMessage);
     };
 
-    if (newSuccess) {
+    if (successMessage) {
       document.addEventListener('keydown', successEscButtonHandler);
       document.addEventListener('click', successClickHandler);
     }
   };
 
   window.message = {
-    renderErrorMessage: renderErrorMessage,
+    renderError: renderError,
 
-    renderSuccessMessage: renderSuccessMessage
+    renderSuccess: renderSuccess
   };
 })();

@@ -30,34 +30,32 @@
     return pinElement;
   };
 
-  var insertPins = function (pins) {
+  var insert = function (pins) {
     var fragment = document.createDocumentFragment();
     pins.forEach(function (pin) {
       var pinElement = renderPin(pin);
       fragment.appendChild(pinElement);
       pinElement.addEventListener('click', function () {
-        window.card.insertCard(pin);
+        window.card.insert(pin);
       });
     });
     pinsContainer.appendChild(fragment);
   };
 
-  var resetPins = function () {
-    var activePins = pinsContainer.querySelectorAll('.map__pin');
+  var reset = function () {
+    var activePins = pinsContainer.querySelectorAll('.map__pin:not(.map__pin--main)');
     activePins.forEach(function (pin) {
-      if (pin.className !== 'map__pin map__pin--main') {
-        pinsContainer.removeChild(pin);
-      }
+      pinsContainer.removeChild(pin);
     });
   };
 
-  var activatePins = function () {
-    insertPins(window.pins.downloadedData);
+  var activate = function () {
+    insert(window.pins.downloadedData);
   };
 
-  var deactivatePins = function () {
-    resetPins();
-    window.card.resetCard();
+  var deactivate = function () {
+    reset();
+    window.card.reset();
   };
 
   var successHandler = function (pins) {
@@ -65,7 +63,7 @@
   };
 
   var errorHandler = function (errorMessage) {
-    window.message.renderErrorMessage(errorMessage);
+    window.message.renderError(errorMessage);
   };
 
   var mainPinMoveHandler = function (evt) {
@@ -141,13 +139,13 @@
   });
 
   window.pins = {
-    insertPins: insertPins,
+    insert: insert,
 
-    activatePins: activatePins,
+    activate: activate,
 
-    resetPins: resetPins,
+    reset: reset,
 
-    deactivatePins: deactivatePins,
+    deactivate: deactivate,
 
     downloadedData: [],
 
