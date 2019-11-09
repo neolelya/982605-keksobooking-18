@@ -4,27 +4,33 @@
   var map = document.querySelector('.map');
   var mainPin = map.querySelector('.map__pin--main');
 
-  var activate = function () {
+  var successHandler = function (pins) {
+    window.map.downloadedData = pins;
+    window.pins.activate(pins);
+    mainPin.classList.add('map__pin--active');
+  };
+
+  var activate = function (cb) {
     map.classList.remove('map--faded');
-    window.pins.activate();
+    window.backend.download(function (pins) {
+      successHandler(pins);
+      cb();
+    }, window.pins.errorHandler);
   };
 
   var activateMapHandler = function () {
-    if (!window.pins.downloadedData.length) {
-      return;
-    }
-    activate();
-    window.form.activateForm();
+    activate(function () {
+      window.form.activate();
+    });
     mainPin.removeEventListener('mousedown', activateMapHandler);
+    mainPin.removeEventListener('keydown', activateMapByKeydownHandler);
   };
 
   var activateMapByKeydownHandler = function (evt) {
     if (window.util.isEnterEvent(evt)) {
-      if (!window.pins.downloadedData.length) {
-        return;
-      }
-      activate();
-      window.form.activateForm();
+      activate(function () {
+        window.form.activate();
+      });
       mainPin.removeEventListener('mousedown', activateMapHandler);
       mainPin.removeEventListener('keydown', activateMapByKeydownHandler);
     }
@@ -33,6 +39,7 @@
   var deactivate = function () {
     map.classList.add('map--faded');
     window.pins.deactivate();
+    mainPin.classList.remove('map__pin--active');
     mainPin.addEventListener('mousedown', activateMapHandler);
     mainPin.addEventListener('keydown', activateMapByKeydownHandler);
   };
@@ -41,6 +48,8 @@
   mainPin.addEventListener('keydown', activateMapByKeydownHandler);
 
   window.map = {
-    deactivate: deactivate
+    deactivate: deactivate,
+
+    downloadedData: []
   };
 })();

@@ -28,13 +28,12 @@
   var propertyInput = adForm.querySelector('.ad-form__upload input[type="file"]');
   var propertyPreview = adForm.querySelector('.ad-form__photo');
   var propertyLabel = adForm.querySelector('.ad-form__drop-zone');
+  var formFields = adForm.querySelectorAll('fieldset');
 
   var setFormFieldsDisabled = function (value) {
-    var formFields = document.querySelectorAll('.ad-form input, .ad-form select, .ad-form textarea, .ad-form button, .map__filters input, .map__filters select');
-
-    for (var i = 0; i < formFields.length; i++) {
-      formFields[i].disabled = value;
-    }
+    formFields.forEach(function (element) {
+      element.disabled = value;
+    });
   };
 
   setFormFieldsDisabled(true);
@@ -94,11 +93,7 @@
     adCapacity[roomsToGuestsRelation[adRoomNumber.value][0]].selected = true;
 
     for (var i = 0; i < guests.length; i++) {
-      if (roomsToGuestsRelation[adRoomNumber.value].includes(guests[i])) {
-        adCapacity[guests[i]].disabled = false;
-      } else {
-        adCapacity[guests[i]].disabled = true;
-      }
+      adCapacity[guests[i]].disabled = !roomsToGuestsRelation[adRoomNumber.value].includes(guests[i]);
     }
   };
 
@@ -109,7 +104,7 @@
     propertyPreview.innerHTML = '';
     window.pins.mainPinResetCoordinates();
     adPrice.placeholder = MinPrice.HOUSE;
-    deactivateForm();
+    deactivate();
     window.map.deactivate();
   };
 
@@ -181,7 +176,7 @@
     changeInputFile(evt.dataTransfer.files[0], propertyPreview.children[0]);
   });
 
-  var activateForm = function () {
+  var activate = function () {
     setFormFieldsDisabled(false);
     adForm.classList.remove('ad-form--disabled');
     adTitle.addEventListener('invalid', inputTitleEditHandler);
@@ -197,7 +192,7 @@
     resetButton.addEventListener('click', resetFormData);
   };
 
-  var deactivateForm = function () {
+  var deactivate = function () {
     setFormFieldsDisabled(true);
     adForm.classList.add('ad-form--disabled');
     adTitle.removeEventListener('invalid', inputTitleEditHandler);
@@ -218,7 +213,7 @@
   };
 
   window.form = {
-    activateForm: activateForm,
+    activate: activate,
 
     setCoordinates: setCoordinates
   };
