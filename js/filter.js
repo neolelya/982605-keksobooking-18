@@ -17,7 +17,7 @@
   var priceFilter = formFilter.querySelector('#housing-price');
   var roomsFilter = formFilter.querySelector('#housing-rooms');
   var guestsFilter = formFilter.querySelector('#housing-guests');
-  var featuresFilter = formFilter.querySelectorAll('input[type=checkbox]');
+  var featuresFilter = Array.from(formFilter.querySelectorAll('input[type=checkbox]'));
 
   var changeInputType = function (element) {
     return typeFilter.value === 'any' ? true : element.offer.type === typeFilter.value;
@@ -45,7 +45,7 @@
   };
 
   var changeInputFeature = function (element) {
-    return Array.from(featuresFilter)
+    return featuresFilter
       .filter(function (elem) {
         return elem.checked;
       })
@@ -68,7 +68,7 @@
   };
 
   var insertFilteredPins = window.util.debounce(function () {
-    filteredPins = window.pins.downloadedData;
+    filteredPins = window.map.downloadedData;
     window.pins.insert(filterData(filteredPins));
   });
 

@@ -18,8 +18,8 @@
 
   var leftMapLimit = 0;
   var rightMapLimit = pinsContainer.offsetWidth - MAIN_PIN_WIDTH;
-  var topMapLimit = 130;
-  var bottomMapLimit = 625;
+  var topMapLimit = 130 - MAIN_PIN_HEIGHT;
+  var bottomMapLimit = 630 - MAIN_PIN_HEIGHT;
 
   var renderPin = function (pin) {
     var pinElement = pinTemplate.cloneNode(true);
@@ -49,17 +49,13 @@
     });
   };
 
-  var activate = function () {
-    insert(window.pins.downloadedData);
+  var activate = function (data) {
+    insert(data);
   };
 
   var deactivate = function () {
     reset();
     window.card.reset();
-  };
-
-  var successHandler = function (pins) {
-    window.pins.downloadedData = pins;
   };
 
   var errorHandler = function (errorMessage) {
@@ -133,7 +129,6 @@
     mainPin.style.top = START_Y + 'px';
   };
 
-  window.backend.download(successHandler, errorHandler);
   window.addEventListener('resize', function () {
     rightMapLimit = pinsContainer.offsetWidth - MAIN_PIN_WIDTH;
   });
@@ -147,8 +142,8 @@
 
     deactivate: deactivate,
 
-    downloadedData: [],
+    mainPinResetCoordinates: mainPinResetCoordinates,
 
-    mainPinResetCoordinates: mainPinResetCoordinates
+    errorHandler: errorHandler
   };
 })();

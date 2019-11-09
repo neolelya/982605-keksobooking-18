@@ -12,10 +12,9 @@
   var cardClose;
 
   var getCardsFeatures = function (card) {
-    var cardsFeatures = [];
-    for (var i = 0; i < card.offer.features.length; i++) {
-      cardsFeatures.push('<li class="popup__feature popup__feature--' + card.offer.features[i] + '"></li>');
-    }
+    var cardsFeatures = card.offer.features.map(function (element) {
+      return '<li class="popup__feature popup__feature--' + element + '"></li>';
+    });
     return cardsFeatures.join('');
   };
 
