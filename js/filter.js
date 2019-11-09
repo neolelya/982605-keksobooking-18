@@ -45,7 +45,7 @@
   };
 
   var changeInputFeature = function (element) {
-    return (featuresFilter)
+    return featuresFilter
       .filter(function (elem) {
         return elem.checked;
       })

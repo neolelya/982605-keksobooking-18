@@ -12,9 +12,8 @@
   var cardClose;
 
   var getCardsFeatures = function (card) {
-    var cardsFeatures = [];
-    card.offer.features.forEach(function (element) {
-      cardsFeatures.push('<li class="popup__feature popup__feature--' + element + '"></li>');
+    var cardsFeatures = card.offer.features.map(function (element) {
+      return '<li class="popup__feature popup__feature--' + element + '"></li>';
     });
     return cardsFeatures.join('');
   };
