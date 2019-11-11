@@ -7,7 +7,6 @@
   var successHandler = function (pins) {
     window.map.downloadedData = pins;
     window.pins.activate(pins);
-    mainPin.classList.add('map__pin--active');
   };
 
   var activate = function (cb) {
@@ -39,7 +38,6 @@
   var deactivate = function () {
     map.classList.add('map--faded');
     window.pins.deactivate();
-    mainPin.classList.remove('map__pin--active');
     mainPin.addEventListener('mousedown', activateMapHandler);
     mainPin.addEventListener('keydown', activateMapByKeydownHandler);
   };

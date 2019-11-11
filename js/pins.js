@@ -9,12 +9,10 @@
   var START_Y = 375;
 
   var dialogWindow = document.querySelector('.map');
-
   var pinsContainer = dialogWindow.querySelector('.map__pins');
-
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-
   var mainPin = dialogWindow.querySelector('.map__pin--main');
+  var previousActivePin;
 
   var leftMapLimit = 0;
   var rightMapLimit = pinsContainer.offsetWidth - MAIN_PIN_WIDTH;
@@ -28,6 +26,25 @@
     pinElement.querySelector('img').alt = pin.offer.title;
 
     return pinElement;
+  };
+
+  var removeActiveClass = function () {
+    if (previousActivePin) {
+      previousActivePin.classList.remove('map__pin--active');
+    }
+  };
+
+  var setActiveClassHandler = function (evt) {
+    var pinElement =
+      evt.target.classList.contains('map__pin')
+        ? evt.target
+        : evt.target.closest('.map__pin');
+    if (!pinElement || pinElement.classList.contains('map__pin--main')) {
+      return;
+    }
+    removeActiveClass();
+    previousActivePin = pinElement;
+    pinElement.classList.add('map__pin--active');
   };
 
   var insert = function (pins) {
@@ -144,6 +161,10 @@
 
     mainPinResetCoordinates: mainPinResetCoordinates,
 
-    errorHandler: errorHandler
+    errorHandler: errorHandler,
+
+    setActiveClassHandler: setActiveClassHandler,
+
+    removeActiveClass: removeActiveClass
   };
 })();
