@@ -16,13 +16,11 @@
   };
 
   var getPhotos = function (card, imgNode) {
-    var cardPhotos = [];
-    card.offer.photos.forEach(function (element) {
+    return card.offer.photos.map(function (photo) {
       var img = imgNode.cloneNode();
-      img.src = element;
-      cardPhotos.push(img.outerHTML);
-    });
-    return cardPhotos.join('');
+      img.src = photo;
+      return img.outerHTML;
+    }).join('');
   };
 
   var renderCard = function (card) {
@@ -88,11 +86,13 @@
 
   var cardCloseClickHandler = function () {
     reset();
+    window.pins.removeActiveClass();
   };
 
   var cardCloseKeydownHandler = function (evt) {
     if (window.util.isEscEvent(evt)) {
       reset();
+      window.pins.removeActiveClass();
     }
   };
 
@@ -103,7 +103,6 @@
     cardUnit = renderCard(data);
     pinsContainer.appendChild(cardUnit);
     cardClose = cardUnit.querySelector('.popup__close');
-    pinsContainer.addEventListener('click', window.pins.setActiveClassHandler);
     cardClose.addEventListener('click', cardCloseClickHandler);
     document.addEventListener('keydown', cardCloseKeydownHandler);
   };
@@ -113,8 +112,6 @@
       return;
     }
     cardClose.removeEventListener('click', cardCloseClickHandler);
-    window.pins.removeActiveClass();
-    pinsContainer.removeEventListener('click', window.pins.setActiveClassHandler);
     document.removeEventListener('keydown', cardCloseKeydownHandler);
     pinsContainer.removeChild(cardUnit);
     cardUnit = null;

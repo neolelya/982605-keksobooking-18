@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var MAX_FILTERED_PINS_QUANTITY = 5;
-
   var Price = {
     MIN: 10000,
     MAX: 50000,
@@ -11,13 +9,12 @@
     HIGH: 'high'
   };
 
-  var filteredPins = [];
   var formFilter = document.querySelector('.map__filters');
   var typeFilter = formFilter.querySelector('#housing-type');
   var priceFilter = formFilter.querySelector('#housing-price');
   var roomsFilter = formFilter.querySelector('#housing-rooms');
   var guestsFilter = formFilter.querySelector('#housing-guests');
-  var featuresFilter = Array.from(formFilter.querySelectorAll('input[type=checkbox]'));
+  var featuresFilter = formFilter.querySelectorAll('input[type=checkbox]');
 
   var changeInputType = function (element) {
     return typeFilter.value === 'any' ? true : element.offer.type === typeFilter.value;
@@ -45,16 +42,15 @@
   };
 
   var changeInputFeature = function (element) {
-    return featuresFilter
-      .filter(function (elem) {
-        return elem.checked;
-      })
-      .map(function (it) {
-        return it.value;
-      })
-      .every(function (feature) {
-        return element.offer.features.includes(feature);
-      });
+    for (var i = 0; i < featuresFilter.length; i++) {
+      if (
+        featuresFilter[i].checked &&
+        !element.offer.features.includes(featuresFilter[i].value)
+      ) {
+        return false;
+      }
+    }
+    return true;
   };
 
   var filterData = function (data) {
@@ -64,12 +60,11 @@
         changeInputRooms(el) &&
         changeInputGuests(el) &&
         changeInputFeature(el);
-    }).slice(0, MAX_FILTERED_PINS_QUANTITY);
+    });
   };
 
   var insertFilteredPins = window.util.debounce(function () {
-    filteredPins = window.map.downloadedData;
-    window.pins.insert(filterData(filteredPins));
+    window.pins.insert(filterData(window.map.downloadedData));
   });
 
   formFilter.addEventListener('change', function () {

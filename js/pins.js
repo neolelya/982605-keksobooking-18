@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var MAX_PINS_QUANTITY = 5;
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
   var MAIN_PIN_WIDTH = 62;
@@ -12,7 +13,6 @@
   var pinsContainer = dialogWindow.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var mainPin = dialogWindow.querySelector('.map__pin--main');
-  var previousActivePin;
 
   var leftMapLimit = 0;
   var rightMapLimit = pinsContainer.offsetWidth - MAIN_PIN_WIDTH;
@@ -29,33 +29,25 @@
   };
 
   var removeActiveClass = function () {
-    if (previousActivePin) {
-      previousActivePin.classList.remove('map__pin--active');
+    var activePinElement = pinsContainer.querySelector('.map__pin--active');
+    if (activePinElement) {
+      activePinElement.classList.remove('map__pin--active');
     }
-  };
-
-  var setActiveClassHandler = function (evt) {
-    var pinElement =
-      evt.target.classList.contains('map__pin')
-        ? evt.target
-        : evt.target.closest('.map__pin');
-    if (!pinElement || pinElement.classList.contains('map__pin--main')) {
-      return;
-    }
-    removeActiveClass();
-    previousActivePin = pinElement;
-    pinElement.classList.add('map__pin--active');
   };
 
   var insert = function (pins) {
     var fragment = document.createDocumentFragment();
-    pins.forEach(function (pin) {
-      var pinElement = renderPin(pin);
-      fragment.appendChild(pinElement);
-      pinElement.addEventListener('click', function () {
-        window.card.insert(pin);
+    pins
+      .slice(0, MAX_PINS_QUANTITY)
+      .forEach(function (pin) {
+        var pinElement = renderPin(pin);
+        fragment.appendChild(pinElement);
+        pinElement.addEventListener('click', function () {
+          removeActiveClass();
+          pinElement.classList.add('map__pin--active');
+          window.card.insert(pin);
+        });
       });
-    });
     pinsContainer.appendChild(fragment);
   };
 
@@ -162,8 +154,6 @@
     mainPinResetCoordinates: mainPinResetCoordinates,
 
     errorHandler: errorHandler,
-
-    setActiveClassHandler: setActiveClassHandler,
 
     removeActiveClass: removeActiveClass
   };
