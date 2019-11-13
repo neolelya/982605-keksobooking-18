@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var MAX_PINS_QUANTITY = 5;
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
   var MAIN_PIN_WIDTH = 62;
@@ -9,11 +10,8 @@
   var START_Y = 375;
 
   var dialogWindow = document.querySelector('.map');
-
   var pinsContainer = dialogWindow.querySelector('.map__pins');
-
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-
   var mainPin = dialogWindow.querySelector('.map__pin--main');
 
   var leftMapLimit = 0;
@@ -30,15 +28,26 @@
     return pinElement;
   };
 
+  var removeActiveClass = function () {
+    var activePinElement = pinsContainer.querySelector('.map__pin--active');
+    if (activePinElement) {
+      activePinElement.classList.remove('map__pin--active');
+    }
+  };
+
   var insert = function (pins) {
     var fragment = document.createDocumentFragment();
-    pins.forEach(function (pin) {
-      var pinElement = renderPin(pin);
-      fragment.appendChild(pinElement);
-      pinElement.addEventListener('click', function () {
-        window.card.insert(pin);
+    pins
+      .slice(0, MAX_PINS_QUANTITY)
+      .forEach(function (pin) {
+        var pinElement = renderPin(pin);
+        fragment.appendChild(pinElement);
+        pinElement.addEventListener('click', function () {
+          removeActiveClass();
+          pinElement.classList.add('map__pin--active');
+          window.card.insert(pin);
+        });
       });
-    });
     pinsContainer.appendChild(fragment);
   };
 
@@ -144,6 +153,8 @@
 
     mainPinResetCoordinates: mainPinResetCoordinates,
 
-    errorHandler: errorHandler
+    errorHandler: errorHandler,
+
+    removeActiveClass: removeActiveClass
   };
 })();

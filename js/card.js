@@ -4,11 +4,8 @@
   var cardUnit;
 
   var dialogWindow = document.querySelector('.map');
-
   var pinsContainer = dialogWindow.querySelector('.map__pins');
-
   var cardTemplate = document.querySelector('#card').content.querySelector('.popup');
-
   var cardClose;
 
   var getCardsFeatures = function (card) {
@@ -19,13 +16,11 @@
   };
 
   var getPhotos = function (card, imgNode) {
-    var cardPhotos = [];
-    for (var i = 0; i < card.offer.photos.length; i++) {
+    return card.offer.photos.map(function (photo) {
       var img = imgNode.cloneNode();
-      img.src = card.offer.photos[i];
-      cardPhotos.push(img.outerHTML);
-    }
-    return cardPhotos.join('');
+      img.src = photo;
+      return img.outerHTML;
+    }).join('');
   };
 
   var renderCard = function (card) {
@@ -91,11 +86,13 @@
 
   var cardCloseClickHandler = function () {
     reset();
+    window.pins.removeActiveClass();
   };
 
   var cardCloseKeydownHandler = function (evt) {
     if (window.util.isEscEvent(evt)) {
       reset();
+      window.pins.removeActiveClass();
     }
   };
 

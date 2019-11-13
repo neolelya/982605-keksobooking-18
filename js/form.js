@@ -92,9 +92,9 @@
 
     adCapacity[roomsToGuestsRelation[adRoomNumber.value][0]].selected = true;
 
-    for (var i = 0; i < guests.length; i++) {
-      adCapacity[guests[i]].disabled = !roomsToGuestsRelation[adRoomNumber.value].includes(guests[i]);
-    }
+    guests.forEach(function (guest) {
+      adCapacity[guest].disabled = !roomsToGuestsRelation[adRoomNumber.value].includes(guest);
+    });
   };
 
   var resetFormData = function () {
