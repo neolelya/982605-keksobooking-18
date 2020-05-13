@@ -4,7 +4,7 @@
   var TIMEOUT = 5000;
 
   var Url = {
-    GET: 'https://neolelya.github.io/Keksobooking/server-response.json',
+    GET: 'https://neolelya.github.io/keksobooking/server-response.json',
     POST: 'https://javascript.pages.academy/keksobooking'
   };
 
